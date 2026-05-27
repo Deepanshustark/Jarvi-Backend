@@ -1,15 +1,27 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch";
 
 dotenv.config();
 
 const app = express();
 
-cors({ origin: "*" })
+// ✅ CORS FIX
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+  })
+);
+
 app.use(express.json());
 
+// ✅ TEST ROUTE
+app.get("/", (req, res) => {
+  res.json({ status: "Backend running 🚀" });
+});
+
+// ✅ CHAT ROUTE
 app.post("/api/chat", async (req, res) => {
   try {
     const { messages, model, temperature, max_tokens } = req.body;
@@ -23,12 +35,12 @@ app.post("/api/chat", async (req, res) => {
           Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model,
+          model: model || "llama-3.3-70b-versatile",
           messages,
           temperature,
           max_tokens,
         }),
-      },
+      }
     );
 
     const data = await response.json();
@@ -44,7 +56,7 @@ app.post("/api/chat", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
+// fixed service
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Backend running on port ${PORT}`);
+  console.log(`Backend running on port ${PORT}`);
 });
