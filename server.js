@@ -7,23 +7,10 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS FIX
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://jarvi-backend.onrender.com"
-    ],
-    methods: ["GET", "POST"],
-  })
-);
+app.use(cors());
 
 app.use(express.json());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  next();
-});
+
 // ✅ TEST ROUTE
 app.get("/", (req, res) => {
   res.json({ status: "Backend running 🚀" });
